@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import CustomModal from './components/Modal';
 
 const tasks = [
   {
@@ -28,16 +29,43 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      modal: false,
       viewCompleted: false,
       taskList: tasks,
+      activeItem: {
+        title: "",
+        description: "",
+        completed: false
+      }
     };
+  }
+
+  toggle = () => {
+    this.setState({modal: !this.state.modal });
+  }
+
+  handleSubmit = item => {
+    this.toggle();
+  }
+
+  handleDelete = item => {
+    this.toggle()
+  }
+
+  createItem = () => {
+    const item = { title: "", modal: !this.state.modal };
+    this.setState({ activeItem: item, modal: !this.state.modal});
+  }
+
+  editItem = item => {
+    this.setState({ activeItem: item, modal: !this.state.modal});
   }
 
   displayCompleted = status => {
     if (status) {
-      return this.setstatus({viewCompleted: true});
+      return this.setState({viewCompleted: true});
     }
-    return this.setstatus({viewCompleted: false})
+    return this.setState({viewCompleted: false})
   }
 
   renderTabList = () => {
@@ -84,6 +112,9 @@ class App extends Component {
             </div>
           </div>
         </div>
+        {this.state.modal ? (
+          <CustomModal activeItem={this.state.activeItem} toggle={this.toggle} onSave={this.handleSubmit} />
+        ) : null}
       </main>
     )
   }
